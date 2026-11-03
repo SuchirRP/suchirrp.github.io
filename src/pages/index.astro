@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import { resume } from '../lib/resume';
+
+const currentJob = resume.experience[0];
+const role = currentJob.title.replace(/\s+-\s+\S+$/, '');
+---
+
+<Base title={resume.name} description={resume.summary} current="resume">
+  <svg slot="backdrop" class="orbit" aria-hidden="true" viewBox="0 0 700 700">
+    <ellipse cx="350" cy="350" rx="150" ry="150" fill="none" stroke="#2B3550"></ellipse>
+    <ellipse cx="350" cy="350" rx="340" ry="130" transform="rotate(-24 350 350)" fill="none" stroke="#2B3550"></ellipse>
+    <ellipse cx="350" cy="350" rx="340" ry="230" transform="rotate(-24 350 350)" fill="none" stroke="#1E2740"></ellipse>
+    <circle cx="350" cy="350" r="70" fill="#0E1424" stroke="#3A4664"></circle>
+    <circle cx="82" cy="453" r="5" fill="#F4B860"></circle>
+    <circle cx="82" cy="453" r="13" fill="none" stroke="#F4B860" opacity="0.45"></circle>
+  </svg>
+
+  <header class="hero">
+    <p class="hero-role">{role} · {resume.location}</p>
+    <h1>{resume.name}</h1>
+    <p class="hero-summary">{resume.summary}</p>
+    <div class="hero-actions">
+      <a class="primary" href="/resume.pdf" download="Suchir-Punuru-Resume.pdf">Download PDF</a>
+      <a href={`mailto:${resume.email}`}>{resume.email}</a>
+      <a href={`https://www.${resume.github}`}>GitHub</a>
+      <a href={`https://www.${resume.linkedin}`}>LinkedIn</a>
+    </div>
+  </header>
+
+  <section class="resume-section" aria-labelledby="experience">
+    <h2 id="experience" class="label">Experience</h2>
+    {
+      resume.experience.map((job) => (
+        <article class="job">
+          <div class="job-date mono-meta">{job.date}</div>
+          <div class="job-body">
+            <h3 class="entry-title">{job.title}</h3>
+            <p class="entry-subtitle">
+              {job.organization} · {job.location}
+            </p>
+            <ul class="bullets">
+              {job.details.map((detail) => (
+                <li>{detail}</li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      ))
+    }
+  </section>
+
+  <section class="resume-section" aria-labelledby="projects">
+    <h2 id="projects" class="label">Projects</h2>
+    <div class="card-grid">
+      {
+        resume.projects.map((project) => (
+          <article class="card">
+            <h3 class="entry-title">
+              <a href={project.url}>{project.title}</a>
+            </h3>
+            <ul class="bullets">
+              {project.details.map((detail) => (
+                <li>{detail}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="resume-section" aria-labelledby="publications">
+    <h2 id="publications" class="label">{resume.publications.length === 1 ? 'Publication' : 'Publications'}</h2>
+    {
+      resume.publications.map((publication) => (
+        <article class="publication">
+          <h3 class="publication-title">
+            <a href={`https://${publication.doi}`}>{publication.title}</a>
+          </h3>
+          <p class="publication-citation">
+            {publication.authors.map((author, index) => (
+              <>
+                {index > 0 && ', '}
+                {author === publication.bold_author ? <strong>{author}</strong> : author}
+              </>
+            ))}
+            . <em>{publication.venue}</em>, {publication.year}.
+          </p>
+          <ul class="bullets">
+            {publication.details.map((detail) => (
+              <li>{detail}</li>
+            ))}
+          </ul>
+        </article>
+      ))
+    }
+  </section>
+
+  <section class="resume-section" aria-labelledby="skills">
+    <h2 id="skills" class="label">Skills</h2>
+    <div class="skills-grid">
+      {
+        resume.skills.map((group) => (
+          <div>
+            <h3>{group.area}</h3>
+            <p>{group.items.join(', ')}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="resume-section" aria-labelledby="education">
+    <h2 id="education" class="label">Education</h2>
+    {
+      resume.education.map((school) => (
+        <div class="education">
+          <div>
+            <h3 class="entry-title">{school.institution}</h3>
+            {school.degrees.map((degree) => (
+              <p class="entry-subtitle">
+                {degree.type}, {degree.field} · {school.location}
+              </p>
+            ))}
+          </div>
+          <div class="mono-meta">{school.date}</div>
+        </div>
+      ))
+    }
+  </section>
+</Base>

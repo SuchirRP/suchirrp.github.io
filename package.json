@@ -1,0 +1,26 @@
+{
+  "name": "suchirrp-github-io",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "resume": "mkdir -p public && typst compile resume-typst/resume.typ public/resume.pdf",
+    "predev": "npm run resume",
+    "dev": "astro dev",
+    "prebuild": "npm run resume",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/react": "^7.1.2",
+    "astro": "^7.4.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}

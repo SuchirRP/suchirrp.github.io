@@ -1,0 +1,62 @@
+---
+import { render } from 'astro:content';
+import Comments from '../../components/Comments.astro';
+import Base from '../../layouts/Base.astro';
+import { formatDate, getPosts, postMeta, type Post } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, index) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[index - 1], older: posts[index + 1] },
+  }));
+}
+
+interface Props {
+  post: Post;
+  newer?: Post;
+  older?: Post;
+}
+
+const { post, newer, older } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Base title={`${post.data.title} · Suchir Punuru`} description={post.data.summary} current="blog">
+  <article class="post">
+    <a class="back-link" href="/blog/">← All posts</a>
+    <header class="post-header">
+      <p class="mono-meta">{formatDate(post.data.date)} · {postMeta(post)}</p>
+      <h1>{post.data.title}</h1>
+      <p class="post-summary">{post.data.summary}</p>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+
+  <nav class="post-neighbours" aria-label="More posts">
+    {
+      older ? (
+        <a href={`/blog/${older.id}/`}>
+          <small>Older</small>
+          {older.data.title}
+        </a>
+      ) : (
+        <span>This is the oldest post</span>
+      )
+    }
+    {
+      newer ? (
+        <a href={`/blog/${newer.id}/`}>
+          <small>Newer</small>
+          {newer.data.title}
+        </a>
+      ) : (
+        <span>This is the newest post</span>
+      )
+    }
+  </nav>
+
+  <Comments />
+</Base>
